@@ -1,10 +1,10 @@
-package br.com.daily.mslogin;
+package br.com.daily.backend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MsLoginApplicationTests {
+class BackendApplicationTests {
 
 	@Test
 	void contextLoads() {

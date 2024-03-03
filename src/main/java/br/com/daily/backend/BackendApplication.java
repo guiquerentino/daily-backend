@@ -1,13 +1,13 @@
-package br.com.daily.mslogin;
+package br.com.daily.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MsLoginApplication {
+public class BackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(MsLoginApplication.class, args);
+		SpringApplication.run(BackendApplication.class, args);
 	}
 
 }
