@@ -4,6 +4,7 @@ import br.com.daily.backend.entities.Account;
 import br.com.daily.backend.entities.dtos.AccountDTO;
 import br.com.daily.backend.repositories.AccountRepository;
 import br.com.daily.backend.services.AccountService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,27 +18,19 @@ public class AccountController {
     public AccountService service;
 
     @PostMapping
-    public ResponseEntity<Object> createAccount(@RequestBody AccountDTO request) {
-
-        Account account = service.createAccount(request);
-
-        return new ResponseEntity<>(account, HttpStatus.CREATED);
-
+    public ResponseEntity<Object> createAccount(@RequestBody @NotNull AccountDTO request) {
+        return new ResponseEntity<>(service.createAccount(request), HttpStatus.CREATED);
     }
 
-//    @GetMapping(value = "{id}")
-//    public ResponseEntity<Account> getAccountDetails(@PathVariable String accountId) {
-//
-//    }
-//
-//    @PutMapping
-//    public ResponseEntity<Account> updateAccountDetails(@RequestBody Account request) {
-//
-//    }
-//
-//    @DeleteMapping(value = "{id}")
-//    public ResponseEntity<Object> deleteAccount(@PathVariable String accountId) {
-//
-//    }
+    @PostMapping(value = "/authorize")
+    public ResponseEntity<Object> authorizeAccount(@RequestBody @NotNull AccountDTO request) {
+        return new ResponseEntity<>(service.authorizeAccount(request), HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping(value = "/password")
+    public ResponseEntity<Object> changeAccountPassword(@RequestBody @NotNull AccountDTO request) {
+        service.changePassword(request);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
 }
