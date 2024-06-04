@@ -2,8 +2,8 @@ package br.com.daily.backend.entities.enums;
 
 public enum ACCOUNT_TYPE {
 
-    PATIENT(1),
-    PSYCHOLOGIST(2);
+    PATIENT(0),
+    PSYCHOLOGIST(1);
 
     public final int accountValue;
 
