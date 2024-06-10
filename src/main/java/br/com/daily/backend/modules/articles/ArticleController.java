@@ -1,8 +1,7 @@
-package br.com.daily.backend.controllers;
+package br.com.daily.backend.modules.articles;
 
-import br.com.daily.backend.entities.Article;
-import br.com.daily.backend.entities.dtos.ArticleDTO;
-import br.com.daily.backend.services.ArticleService;
+import br.com.daily.backend.modules.articles.domain.Article;
+import br.com.daily.backend.modules.articles.domain.dtos.ArticleDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,7 +15,6 @@ import java.util.List;
 @RequestMapping("/api/v1/article")
 public class ArticleController {
 
-    //get post put delete
     @Autowired
     ArticleService service;
 

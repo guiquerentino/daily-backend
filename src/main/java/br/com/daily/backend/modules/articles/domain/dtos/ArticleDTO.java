@@ -1,6 +1,6 @@
-package br.com.daily.backend.entities.dtos;
+package br.com.daily.backend.modules.articles.domain.dtos;
 
-import br.com.daily.backend.entities.Article;
+import br.com.daily.backend.modules.articles.domain.Article;
 import lombok.Data;
 
 import java.time.LocalDateTime;

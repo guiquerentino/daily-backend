@@ -1,4 +1,4 @@
-package br.com.daily.backend.exceptions;
+package br.com.daily.backend.core.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

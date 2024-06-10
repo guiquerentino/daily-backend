@@ -1,9 +1,9 @@
-package br.com.daily.backend.entities;
+package br.com.daily.backend.modules.accounts.domain;
 
 import java.math.BigInteger;
 
-import br.com.daily.backend.entities.dtos.AccountDTO;
-import br.com.daily.backend.entities.enums.ACCOUNT_TYPE;
+import br.com.daily.backend.modules.accounts.domain.dto.AccountDTO;
+import br.com.daily.backend.modules.accounts.domain.enums.ACCOUNT_TYPE;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,12 +20,7 @@ public class Account {
     private byte[] password;
     private byte[] passwordSalt;
     private String fullName;
-    private String age;
-    private String phoneNumber;
-    private String personalDocument;
-    private String professionalDocument;
     private String hashAlgorithm;
-    private boolean canAttend;
 
     public static AccountDTO mapToDTO(Account account) {
         AccountDTO accountDTO = new AccountDTO();
@@ -34,11 +29,6 @@ public class Account {
         accountDTO.setAccountType(account.getAccountType());
         accountDTO.setEmail(account.getEmail());
         accountDTO.setFullName(account.getFullName());
-        accountDTO.setAge(account.getAge());
-        accountDTO.setPhoneNumber(account.getPhoneNumber());
-        accountDTO.setPersonalDocument(account.getPersonalDocument());
-        accountDTO.setProfessionalDocument(account.getProfessionalDocument());
-        accountDTO.setCanAttend(account.isCanAttend());
 
         return accountDTO;
     }

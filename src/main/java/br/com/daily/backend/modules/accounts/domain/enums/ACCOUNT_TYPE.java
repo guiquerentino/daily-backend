@@ -1,4 +1,4 @@
-package br.com.daily.backend.entities.enums;
+package br.com.daily.backend.modules.accounts.domain.enums;
 
 public enum ACCOUNT_TYPE {
 

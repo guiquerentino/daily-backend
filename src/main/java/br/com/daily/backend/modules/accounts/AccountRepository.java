@@ -1,8 +1,7 @@
-package br.com.daily.backend.repositories;
+package br.com.daily.backend.modules.accounts;
 
-import br.com.daily.backend.entities.Account;
+import br.com.daily.backend.modules.accounts.domain.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigInteger;

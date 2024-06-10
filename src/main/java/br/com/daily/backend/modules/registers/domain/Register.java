@@ -1,4 +1,4 @@
-package br.com.daily.backend.entities;
+package br.com.daily.backend.modules.registers.domain;
 
 import br.com.daily.backend.entities.enums.EMOTION_TYPE;
 import br.com.daily.backend.entities.enums.WEATHER_TYPE;

@@ -1,4 +1,4 @@
-package br.com.daily.backend.entities;
+package br.com.daily.backend.modules.registers.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;

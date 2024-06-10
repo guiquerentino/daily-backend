@@ -1,15 +1,12 @@
-package br.com.daily.backend.controllers;
+package br.com.daily.backend.modules.registers;
 
-import br.com.daily.backend.entities.Register;
-import br.com.daily.backend.repositories.RegisterRepository;
+import br.com.daily.backend.modules.registers.domain.Register;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController

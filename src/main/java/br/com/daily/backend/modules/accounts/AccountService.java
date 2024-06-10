@@ -1,10 +1,11 @@
-package br.com.daily.backend.services;
+package br.com.daily.backend.modules.accounts;
 
-import br.com.daily.backend.entities.Account;
-import br.com.daily.backend.entities.dtos.AccountDTO;
-import br.com.daily.backend.exceptions.LoginException;
-import br.com.daily.backend.repositories.AccountRepository;
-import br.com.daily.backend.utils.AccountUtils;
+import br.com.daily.backend.modules.accounts.domain.Account;
+import br.com.daily.backend.modules.accounts.domain.dto.AccountDTO;
+import br.com.daily.backend.modules.accounts.domain.dto.ChangePasswordDTO;
+import br.com.daily.backend.modules.accounts.domain.dto.CreateAccountDTO;
+import br.com.daily.backend.modules.accounts.domain.dto.LoginDTO;
+import br.com.daily.backend.core.exceptions.LoginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class AccountService {
     @Autowired
     public AccountUtils utils;
 
-    public AccountDTO createAccount(AccountDTO account) {
+    public AccountDTO createAccount(CreateAccountDTO account) {
 
         Optional<Account> accountDB = repository.findByEmail(account.getEmail());
 
@@ -35,7 +36,7 @@ public class AccountService {
         return Account.mapToDTO(accountWithPasswordHashed);
     }
 
-    public AccountDTO authorizeAccount(AccountDTO account) {
+    public AccountDTO authorizeAccount(LoginDTO account) {
 
         Optional<Account> accountDB = repository.findByEmail(account.getEmail());
 
@@ -43,19 +44,20 @@ public class AccountService {
             throw new LoginException("EMAIL_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
 
+        if (!accountDB.get().getAccountType().equals(account.getAccountType())) {
+            throw new LoginException("WRONG_APP", HttpStatus.CONFLICT);
+        }
+
         byte[] password = utils.hashPasswordToAuthorize(account.getPassword(), accountDB.get().getPasswordSalt());
 
         if (Arrays.equals(password, accountDB.get().getPassword())) {
-
-            account = Account.mapToDTO(accountDB.get());
-
-            return account;
-
+            return Account.mapToDTO(accountDB.get());
         }
+
         throw new LoginException("WRONG_PASSWORD", HttpStatus.UNAUTHORIZED);
     }
 
-    public void changePassword(AccountDTO request) {
+    public void changePassword(ChangePasswordDTO request) {
 
         Optional<Account> accountDB = repository.findByEmail(request.getEmail());
 

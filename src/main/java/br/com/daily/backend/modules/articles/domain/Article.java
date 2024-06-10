@@ -1,6 +1,6 @@
-package br.com.daily.backend.entities;
+package br.com.daily.backend.modules.articles.domain;
 
-import br.com.daily.backend.entities.dtos.ArticleDTO;
+import br.com.daily.backend.modules.articles.domain.dtos.ArticleDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
