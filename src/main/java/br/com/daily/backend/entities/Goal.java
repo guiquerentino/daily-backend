@@ -6,12 +6,12 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "GOALS_INFO")
-public class Goals {
+public class Goal {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    
+
 
 
 }

@@ -34,4 +34,5 @@ public class ArticleController {
     public ResponseEntity<ArticleDTO> createArticle(@RequestBody ArticleDTO request){
         return new ResponseEntity<>(service.createArticle(request),HttpStatus.CREATED);
     }
+
 }
