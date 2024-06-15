@@ -1,4 +1,4 @@
-package br.com.daily.backend.modules.registers.domain;
+package br.com.daily.backend.modules.emotions.domain;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,7 +14,7 @@ public class Comment {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "register_id", nullable = false)
-    private Register register;
+    private Emotion emotion;
     private String text;
     private LocalDateTime dataHoraCriacao = LocalDateTime.now();
 }
