@@ -3,6 +3,7 @@ package br.com.daily.backend.modules.accounts;
 import br.com.daily.backend.modules.accounts.domain.Account;
 import br.com.daily.backend.modules.accounts.domain.dto.*;
 import br.com.daily.backend.core.exceptions.LoginException;
+import br.com.daily.backend.modules.code.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,8 @@ public class AccountService {
         }
 
         Account accountWithPasswordHashed = utils.hashPassword(account);
+        accountWithPasswordHashed.setCodeToConnect(CodeService.generateAccountCode());
+
         repository.save(accountWithPasswordHashed);
 
         return Account.mapToDTO(accountWithPasswordHashed);
@@ -71,10 +74,10 @@ public class AccountService {
         throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
     }
 
-    public void changeEmail(ChangeEmailDTO request){
+    public void changeEmail(ChangeEmailDTO request) {
         Optional<Account> account = repository.findByEmail(request.getEmail());
 
-        if (account.isPresent()){
+        if (account.isPresent()) {
 
             account.get().setEmail(request.getNewEmail());
 

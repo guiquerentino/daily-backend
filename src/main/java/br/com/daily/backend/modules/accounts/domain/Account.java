@@ -24,6 +24,7 @@ public class Account {
     private String hashAlgorithm;
     @Lob
     private byte[] profilePhoto;
+    private String codeToConnect;
 
     public static AccountDTO mapToDTO(Account account) {
         AccountDTO accountDTO = new AccountDTO();
@@ -32,6 +33,8 @@ public class Account {
         accountDTO.setAccountType(account.getAccountType());
         accountDTO.setEmail(account.getEmail());
         accountDTO.setFullName(account.getFullName());
+        accountDTO.setProfilePhoto(account.getProfilePhoto());
+        accountDTO.setCodeToConnect(accountDTO.getCodeToConnect());
 
         return accountDTO;
     }

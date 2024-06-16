@@ -13,6 +13,10 @@ public class AccountDTO {
     private ACCOUNT_TYPE accountType;
     private String email;
     private String fullName;
+    private byte[] profilePhoto;
+
+    private String codeToConnect;
+
 
     public static Account mapToDO(AccountDTO accountDTO) {
         Account account = new Account();
@@ -21,6 +25,8 @@ public class AccountDTO {
         account.setFullName(accountDTO.getFullName());
         account.setEmail(accountDTO.getEmail());
         account.setAccountType(accountDTO.getAccountType());
+        account.setCodeToConnect(accountDTO.getCodeToConnect());
+        account.setProfilePhoto(accountDTO.getProfilePhoto());
 
         return account;
     }
