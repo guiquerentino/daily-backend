@@ -1,6 +1,10 @@
 package br.com.daily.backend.modules.emotions.domain;
 
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
+import br.com.daily.backend.modules.emotions.domain.enums.EMOTION_TYPE;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -17,21 +21,28 @@ public class Emotion {
     private Long id;
     private Long ownerId;
     private String text;
-    private List<String> tags;
-    private LocalDateTime dataHoraCriacao = LocalDateTime.now();
+    @Column(columnDefinition = "TEXT")
+    private String tags;
+    private LocalDateTime creationDate = LocalDateTime.now();
     @OneToMany(mappedBy = "emotion", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+    @Enumerated(EnumType.STRING)
+    private EMOTION_TYPE emotionType;
 
-    public static EmotionDTO mapToDTO(Emotion dObject) {
+    public static EmotionDTO mapToDTO(Emotion dObject) throws JsonProcessingException {
         EmotionDTO dto = new EmotionDTO();
 
-        dto.setTags(dObject.getTags());
+        ObjectMapper mapper = new ObjectMapper();
+
+        dto.setTags(mapper.readValue(dObject.getTags(), new TypeReference<List<Tag>>() {
+        }));
+
         dto.setText(dObject.getText());
         dto.setId(dObject.getId());
         dto.setComments(dObject.getComments());
         dto.setOwnerId(dObject.getOwnerId());
-        dto.setDataHoraCriacao(dObject.getDataHoraCriacao());
-
+        dto.setCreationDate(dObject.getCreationDate());
+        dto.setEmotionType(dObject.getEmotionType());
         return dto;
     }
 

@@ -2,6 +2,8 @@ package br.com.daily.backend.modules.emotions;
 
 import br.com.daily.backend.modules.emotions.domain.Emotion;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
+import br.com.daily.backend.modules.emotions.domain.dto.TagDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,14 +16,14 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping(value = "/api/v1/register")
+@RequestMapping(value = "/api/v1/emotions")
 public class EmotionController {
 
     @Autowired
     private EmotionService service;
 
     @PostMapping
-    private ResponseEntity<EmotionDTO> saveRegister(@RequestBody @NotNull EmotionDTO request) {
+    private ResponseEntity<EmotionDTO> saveRegister(@RequestBody @NotNull EmotionDTO request) throws JsonProcessingException {
         return new ResponseEntity<>(service.saveEmotion(request), HttpStatus.CREATED);
     }
 
@@ -31,7 +33,7 @@ public class EmotionController {
     }
 
     @PutMapping
-    private ResponseEntity<EmotionDTO> updateRegister(@RequestBody EmotionDTO request) {
+    private ResponseEntity<EmotionDTO> updateRegister(@RequestBody EmotionDTO request) throws JsonProcessingException {
         return new ResponseEntity<>(service.updateEmotion(request), HttpStatus.OK);
     }
 
@@ -40,6 +42,11 @@ public class EmotionController {
         service.deleteEmotion(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/tags")
+    private ResponseEntity<List<TagDTO>> returnAllTags(){
+        return new ResponseEntity<>(service.returnAllTags(), HttpStatus.OK);
     }
 
 }

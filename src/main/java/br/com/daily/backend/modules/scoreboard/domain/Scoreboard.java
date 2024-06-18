@@ -1,8 +1,7 @@
 package br.com.daily.backend.modules.scoreboard.domain;
 
 import br.com.daily.backend.modules.scoreboard.domain.dto.ScoreboardDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -10,6 +9,8 @@ import lombok.Data;
 @Table(name = "SCOREBOARD_INFO")
 public class Scoreboard {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private Long ownerId;
     private int mentalHealth;

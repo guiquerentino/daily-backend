@@ -2,7 +2,10 @@ package br.com.daily.backend.modules.emotions;
 
 import br.com.daily.backend.core.exceptions.LoginException;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
+import br.com.daily.backend.modules.emotions.domain.Tag;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
+import br.com.daily.backend.modules.emotions.domain.dto.TagDTO;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,7 +22,12 @@ public class EmotionService {
     @Autowired
     EmotionRepository repository;
 
-    public EmotionDTO saveEmotion(EmotionDTO request) {
+    @Autowired
+    TagRepository tagRepository;
+
+    public EmotionDTO saveEmotion(EmotionDTO request) throws JsonProcessingException {
+
+
         return Emotion.mapToDTO(repository.save(EmotionDTO.mapToDO(request)));
     }
 
@@ -30,24 +38,25 @@ public class EmotionService {
 
         LocalDateTime nextDay = formattedDate.plusDays(1);
 
-        List<Emotion> fetchedDbEmotions = repository.findByOwnerIdAndDataHoraCriacaoBetween(id, formattedDate, nextDay);
+        List<Emotion> fetchedDbEmotions = repository.findByOwnerIdAndCreationDateBetween(id, formattedDate, nextDay);
 
-        fetchedDbEmotions.forEach(emotion -> response.add(Emotion.mapToDTO(emotion)));
+        fetchedDbEmotions.forEach(emotion -> {
+            try {
+                response.add(Emotion.mapToDTO(emotion));
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         return response;
     }
 
-    public EmotionDTO updateEmotion(EmotionDTO request) {
+    public EmotionDTO updateEmotion(EmotionDTO request) throws JsonProcessingException {
         Optional<Emotion> emotion = repository.findById(request.getId());
 
         if (emotion.isEmpty()) {
             throw new LoginException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
-
-        emotion.get().setOwnerId(request.getOwnerId());
-        emotion.get().setText(request.getText());
-        emotion.get().setTags(request.getTags());
-        emotion.get().setComments(request.getComments());
 
         return Emotion.mapToDTO(repository.save(emotion.get()));
     }
@@ -60,6 +69,14 @@ public class EmotionService {
         }
 
         repository.deleteById(id);
+    }
+
+    public List<TagDTO> returnAllTags() {
+
+        List<TagDTO> response = new ArrayList<>();
+        tagRepository.findAll().forEach(tag -> response.add(Tag.mapToDTO(tag)));
+
+        return response;
     }
 
 }
