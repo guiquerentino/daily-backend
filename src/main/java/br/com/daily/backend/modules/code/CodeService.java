@@ -6,13 +6,13 @@ import java.util.Random;
 
 @Service
 public class CodeService {
-    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    private static final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
-    public static String generateAccountCode() {
+    public String generateAccountCode() {
         Random random = new Random();
-        StringBuilder sb = new StringBuilder(6);
+        StringBuilder sb = new StringBuilder(8);
 
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 8; i++) {
             int index = random.nextInt(CHARACTERS.length());
             sb.append(CHARACTERS.charAt(index));
         }

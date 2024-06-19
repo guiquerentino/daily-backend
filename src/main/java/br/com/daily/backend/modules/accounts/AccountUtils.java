@@ -17,7 +17,6 @@ public class AccountUtils {
         Account response = new Account();
         response.setAccountType(account.getAccountType());
         response.setHashAlgorithm("Argon2Id");
-        response.setFullName(account.getFullName());
         response.setEmail(account.getEmail());
 
         response.setPasswordSalt(generatePasswordSalt());

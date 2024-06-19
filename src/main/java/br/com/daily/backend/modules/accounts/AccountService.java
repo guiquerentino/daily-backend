@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -15,10 +16,13 @@ import java.util.Optional;
 public class AccountService {
 
     @Autowired
-    public AccountRepository repository;
+    private AccountRepository repository;
 
     @Autowired
-    public AccountUtils utils;
+    private AccountUtils utils;
+
+    @Autowired
+    private CodeService codeService;
 
     public AccountDTO createAccount(CreateAccountDTO account) {
 
@@ -29,7 +33,6 @@ public class AccountService {
         }
 
         Account accountWithPasswordHashed = utils.hashPassword(account);
-        accountWithPasswordHashed.setCodeToConnect(CodeService.generateAccountCode());
 
         repository.save(accountWithPasswordHashed);
 
@@ -88,4 +91,29 @@ public class AccountService {
         throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
     }
 
+    public AccountDTO doOnboarding(OnboardingDTO request) {
+        Optional<Account> account = repository.findById(request.getAccountId());
+
+        if (account.isPresent()) {
+
+            if (!account.get().isHasOnboarding()) {
+
+                account.get().setFullName(request.getFullName());
+                account.get().setGender(request.getGender());
+                account.get().setAge(request.getAge());
+                account.get().setTarget(request.getTarget());
+                account.get().setMeditationExperience(request.getMeditationExperience());
+                account.get().setCodeToConnect(codeService.generateAccountCode());
+                account.get().setHasOnboarding(true);
+
+                repository.save(account.get());
+
+                return Account.mapToDTO(account.get());
+            }
+
+            throw new LoginException("ONBOARDING_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
+
+        }
+        throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
+    }
 }

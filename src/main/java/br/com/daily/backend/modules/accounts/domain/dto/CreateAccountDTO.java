@@ -8,7 +8,6 @@ public class CreateAccountDTO {
 
     private String email;
     private String password;
-    private String fullName;
     private ACCOUNT_TYPE accountType;
 
 }

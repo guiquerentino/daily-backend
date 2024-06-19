@@ -1,6 +1,7 @@
 package br.com.daily.backend.modules.accounts;
 
 import br.com.daily.backend.modules.accounts.domain.dto.*;
+import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,4 +40,8 @@ public class AccountController {
         service.changeEmail(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-}
+
+    @PutMapping(value = "/onboarding")
+    public ResponseEntity<AccountDTO> doOnboarding(@RequestBody @NotNull OnboardingDTO request) {
+        return new ResponseEntity<>(service.doOnboarding(request), HttpStatus.OK);
+    }}
