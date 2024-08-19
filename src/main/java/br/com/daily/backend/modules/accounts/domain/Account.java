@@ -15,30 +15,27 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "USER_INFO")
+@Table(name = "user_info")
 public class Account {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private BigInteger id;
     private ACCOUNT_TYPE accountType;
+    @Column(unique = true, nullable = false, name = "email")
     private String email;
     private byte[] password;
     private byte[] passwordSalt;
     private String hashAlgorithm;
-
     private String fullName;
     @Enumerated(EnumType.STRING)
     private GENDER gender;
     private int age;
-
     private boolean hasOnboarding;
     @Enumerated(EnumType.STRING)
-    private TARGET target;
+    private List<TARGET> target;
     @Enumerated(EnumType.STRING)
     private MEDITATION_EXPERIENCE meditationExperience;
-
-
     @Lob
     private byte[] profilePhoto;
     private String codeToConnect;

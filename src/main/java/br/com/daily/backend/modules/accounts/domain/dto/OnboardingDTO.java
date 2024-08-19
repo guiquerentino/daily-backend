@@ -6,6 +6,7 @@ import br.com.daily.backend.modules.accounts.domain.enums.TARGET;
 import lombok.Data;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 public class OnboardingDTO {
@@ -14,6 +15,6 @@ public class OnboardingDTO {
     private String fullName;
     private GENDER gender;
     private int age;
-    private TARGET target;
+    private List<TARGET> target;
     private MEDITATION_EXPERIENCE meditationExperience;
 }

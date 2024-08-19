@@ -1,5 +1,6 @@
 package br.com.daily.backend.modules.emotions;
 
+import br.com.daily.backend.BackendApplication;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
 import br.com.daily.backend.modules.emotions.domain.dto.TagDTO;
@@ -40,7 +41,6 @@ public class EmotionController {
     @DeleteMapping("/{id}")
     private ResponseEntity<Object> deleteRegister(@PathVariable Long id) {
         service.deleteEmotion(id);
-
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

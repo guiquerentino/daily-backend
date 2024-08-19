@@ -34,7 +34,7 @@ public class EmotionService {
     public List<EmotionDTO> fetchEmotionsByUser(Long id, String date) {
         List<EmotionDTO> response = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        LocalDateTime formattedDate = LocalDateTime.parse(date, formatter);
+        LocalDateTime formattedDate = LocalDateTime.parse(date, formatter).toLocalDate().atStartOfDay();
 
         LocalDateTime nextDay = formattedDate.plusDays(1);
 

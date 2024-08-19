@@ -11,5 +11,6 @@ import java.util.List;
 public interface EmotionRepository extends JpaRepository<Emotion, Long> {
 
     List<Emotion> findByOwnerIdAndCreationDateBetween(Long ownerId, LocalDateTime startDate, LocalDateTime endDate);
+    List<Emotion> findByOwnerId(Long ownerId);
 
 }

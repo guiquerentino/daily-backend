@@ -6,12 +6,12 @@ import lombok.Data;
 @Data
 public class ScoreboardDTO {
 
-    private int mentalHealth;
-    private int focus;
-    private int relationship;
-    private int personalDevelopment;
-    private int selfEsteem;
-    private int stressControl;
+    private int mentalHealth = 50;
+    private int focus = 50;
+    private int relationship = 50;
+    private int personalDevelopment = 50;
+    private int selfEsteem = 50;
+    private int stressControl = 50;
 
     public static Scoreboard mapToDo(ScoreboardDTO scoreboardDTO){
         Scoreboard scoreboardDO = new Scoreboard();
