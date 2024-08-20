@@ -1,6 +1,7 @@
 package br.com.daily.backend.modules.reminders.domain.dto;
 
 import br.com.daily.backend.modules.reminders.domain.Reminder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,6 +16,8 @@ public class ReminderDTO {
     private Long id;
     private String text;
     private LocalDateTime scheduledTime;
+    @JsonProperty(value = "isActivated")
+    private boolean isActivated;
 
     public static Reminder mapToDO(ReminderDTO reminderDTO){
         Reminder reminder = new Reminder();
@@ -22,6 +25,7 @@ public class ReminderDTO {
         reminder.setId(reminderDTO.getId());
         reminder.setText(reminderDTO.getText());
         reminder.setScheduledTime(reminderDTO.getScheduledTime());
+        reminder.setActivated(reminderDTO.isActivated());
 
         return reminder;
     }

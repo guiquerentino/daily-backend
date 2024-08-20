@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/reminder")
@@ -29,6 +30,12 @@ public class ReminderController {
     @PostMapping
     public Reminder createReminder(@RequestBody ReminderDTO request){
         return repository.save(ReminderDTO.mapToDO(request));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deleteReminder(@RequestParam Long id){
+        repository.deleteById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

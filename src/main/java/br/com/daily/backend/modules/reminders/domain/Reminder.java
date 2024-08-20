@@ -15,12 +15,15 @@ public class Reminder {
     private Long id;
     private String text;
     private LocalDateTime scheduledTime;
+    private boolean isActivated;
 
     public static ReminderDTO mapToDTO(Reminder reminder){
         ReminderDTO reminderDTO = new ReminderDTO();
 
         reminderDTO.setText(reminder.getText());
         reminderDTO.setScheduledTime(reminder.getScheduledTime());
+        reminderDTO.setActivated(reminder.isActivated());
+        reminderDTO.setId(reminder.getId());
 
         return reminderDTO;
     }
