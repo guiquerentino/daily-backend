@@ -15,11 +15,13 @@ public class ArticleDTO {
     private String title;
     private String text;
     private String autor;
+    private String bannerURL;
     private LocalDateTime creationDate = LocalDateTime.now();
 
     public static Article mapToDo(ArticleDTO articleDTO) {
         Article article = new Article();
 
+        article.setBannerURL(articleDTO.getBannerURL());
         article.setTitle(articleDTO.getTitle());
         article.setText(articleDTO.getText());
         article.setAutor(articleDTO.getAutor());

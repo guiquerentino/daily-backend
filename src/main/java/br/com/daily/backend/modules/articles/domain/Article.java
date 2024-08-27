@@ -21,11 +21,13 @@ public class Article {
     private String title;
     private String text;
     private String autor;
+    private String bannerURL;
     private LocalDateTime creationDate = LocalDateTime.now();
 
     public static ArticleDTO mapToDTO(Article article){
         ArticleDTO articleDTO = new ArticleDTO();
 
+        articleDTO.setBannerURL(article.getBannerURL());
         articleDTO.setTitle(article.getTitle());
         articleDTO.setText(article.getText());
         articleDTO.setAutor(article.getAutor());
