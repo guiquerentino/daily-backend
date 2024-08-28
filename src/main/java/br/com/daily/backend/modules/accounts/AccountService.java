@@ -3,6 +3,7 @@ package br.com.daily.backend.modules.accounts;
 import br.com.daily.backend.modules.accounts.domain.Account;
 import br.com.daily.backend.modules.accounts.domain.dto.*;
 import br.com.daily.backend.core.exceptions.LoginException;
+import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
 import br.com.daily.backend.modules.code.CodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -77,12 +78,25 @@ public class AccountService {
         throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
     }
 
-    public void changeEmail(ChangeEmailDTO request) {
-        Optional<Account> account = repository.findByEmail(request.getEmail());
+    public void changeAccountInfos(ChangeAccountDTO request) {
+        Optional<Account> account = repository.findById(request.getUserId());
 
         if (account.isPresent()) {
+            account.get().setEmail(request.getEmail());
 
-            account.get().setEmail(request.getNewEmail());
+            if(request.getGender() == 0){
+                account.get().setGender(GENDER.FEMALE);
+            }
+
+            if(request.getGender() == 1){
+                account.get().setGender(GENDER.MALE);
+            }
+
+            if(request.getGender() == 2){
+                account.get().setGender(GENDER.NONE);
+            }
+
+            account.get().setFullName(request.getFullName());
 
             repository.save(account.get());
 

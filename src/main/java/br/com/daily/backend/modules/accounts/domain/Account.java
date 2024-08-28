@@ -2,6 +2,7 @@ package br.com.daily.backend.modules.accounts.domain;
 
 import java.math.BigInteger;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.List;
 
 import br.com.daily.backend.modules.accounts.domain.dto.AccountDTO;
@@ -36,8 +37,8 @@ public class Account {
     private List<TARGET> target;
     @Enumerated(EnumType.STRING)
     private MEDITATION_EXPERIENCE meditationExperience;
-    @Lob
     private byte[] profilePhoto;
+    private List<String> completedGoals = new ArrayList<>();
     private String codeToConnect;
 
     public static AccountDTO mapToDTO(Account account) {
@@ -47,6 +48,7 @@ public class Account {
         accountDTO.setAccountType(account.getAccountType());
         accountDTO.setEmail(account.getEmail());
         accountDTO.setProfilePhoto(account.getProfilePhoto());
+        accountDTO.setCompletedGoals(account.getCompletedGoals());
         accountDTO.setCodeToConnect(account.getCodeToConnect());
         accountDTO.setFullName(account.getFullName());
         accountDTO.setGender(account.getGender());

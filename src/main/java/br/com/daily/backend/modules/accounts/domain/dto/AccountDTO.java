@@ -24,7 +24,7 @@ public class AccountDTO {
     private List<TARGET> target;
     private boolean hasOnboarding;
     private MEDITATION_EXPERIENCE meditationExperience;
-
+    private List<String> completedGoals;
     private String codeToConnect;
 
 
@@ -33,6 +33,7 @@ public class AccountDTO {
 
         account.setHashAlgorithm("Argon2Id");
         account.setFullName(accountDTO.getFullName());
+        account.setCompletedGoals(accountDTO.getCompletedGoals());
         account.setEmail(accountDTO.getEmail());
         account.setAccountType(accountDTO.getAccountType());
         account.setCodeToConnect(accountDTO.getCodeToConnect());

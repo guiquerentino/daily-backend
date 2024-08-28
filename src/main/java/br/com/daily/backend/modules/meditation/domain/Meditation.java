@@ -20,4 +20,7 @@ public class Meditation {
 
     private String text;
 
+    private String audioFile;
+
+    private String duration;
 }
