@@ -18,7 +18,7 @@ public class EmotionDTO {
     private String text;
     private List<Tag> tags;
     private LocalDateTime creationDate;
-    private List<Comment> comments;
+    private String comment;
     private EMOTION_TYPE emotionType;
 
     public static Emotion mapToDO(EmotionDTO dto) throws JsonProcessingException {
@@ -29,7 +29,7 @@ public class EmotionDTO {
         emotion.setTags(mapper.writeValueAsString(dto.getTags()));
         emotion.setText(dto.getText());
         emotion.setId(dto.getId());
-        emotion.setComments(dto.getComments());
+        emotion.setComment(dto.getComment());
         emotion.setOwnerId(dto.getOwnerId());
         emotion.setEmotionType(dto.getEmotionType());
 

@@ -23,12 +23,13 @@ public class ReminderController {
     ReminderRepository repository;
 
     @GetMapping
-    public ResponseEntity<List<ReminderDTO>> fetchReminders(){
-        return new ResponseEntity<>(service.fetchAllReminders(), HttpStatus.OK);
+    public ResponseEntity<List<ReminderDTO>> fetchReminders(@RequestParam Long userId){
+        return new ResponseEntity<>(service.fetchAllReminders(userId), HttpStatus.OK);
     }
 
     @PostMapping
-    public Reminder createReminder(@RequestBody ReminderDTO request){
+    public Reminder createReminder(@RequestBody ReminderDTO request, @RequestParam Long userId){
+        request.setUserId(userId);
         return repository.save(ReminderDTO.mapToDO(request));
     }
 

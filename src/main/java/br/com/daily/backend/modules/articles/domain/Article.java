@@ -22,6 +22,8 @@ public class Article {
     private String text;
     private String autor;
     private String bannerURL;
+    private String minutesToRead;
+    private String category;
     private LocalDateTime creationDate = LocalDateTime.now();
 
     public static ArticleDTO mapToDTO(Article article){
@@ -29,7 +31,9 @@ public class Article {
 
         articleDTO.setBannerURL(article.getBannerURL());
         articleDTO.setTitle(article.getTitle());
+        articleDTO.setMinutesToRead(article.getMinutesToRead());
         articleDTO.setText(article.getText());
+        articleDTO.setCategory(articleDTO.getCategory());
         articleDTO.setAutor(article.getAutor());
         articleDTO.setCreationDate(article.getCreationDate());
 

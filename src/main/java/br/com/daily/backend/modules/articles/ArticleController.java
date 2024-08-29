@@ -25,8 +25,8 @@ public class ArticleController {
     }
 
     @GetMapping("all")
-    public ResponseEntity<Page<Article>> listAll(Pageable pageable){
-        return new ResponseEntity<>(service.listAll(pageable),HttpStatus.OK);
+    public ResponseEntity<List<Article>> listAll(Pageable pageable){
+        return new ResponseEntity<>(service.listAll(),HttpStatus.OK);
     }
 
     @PostMapping

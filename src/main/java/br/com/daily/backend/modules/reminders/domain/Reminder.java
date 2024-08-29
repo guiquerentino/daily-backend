@@ -14,6 +14,7 @@ public class Reminder {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String text;
+    private Long userId;
     private LocalDateTime scheduledTime;
     private boolean isActivated;
 
@@ -22,6 +23,7 @@ public class Reminder {
 
         reminderDTO.setText(reminder.getText());
         reminderDTO.setScheduledTime(reminder.getScheduledTime());
+        reminderDTO.setUserId(reminder.getUserId());
         reminderDTO.setActivated(reminder.isActivated());
         reminderDTO.setId(reminder.getId());
 

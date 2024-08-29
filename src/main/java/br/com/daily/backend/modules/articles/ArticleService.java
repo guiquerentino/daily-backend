@@ -26,8 +26,8 @@ public class ArticleService {
         return response;
     }
 
-    public Page<Article> listAll(Pageable pageable) {
-        return repository.findAll(pageable);
+    public List<Article> listAll() {
+        return repository.findAll();
     }
 
     public ArticleDTO createArticle(ArticleDTO request){

@@ -14,9 +14,9 @@ public class ReminderService {
     @Autowired
     ReminderRepository repository;
 
-    public List<ReminderDTO> fetchAllReminders(){
+    public List<ReminderDTO> fetchAllReminders(Long userId){
         List<ReminderDTO> reminderDTOList = new ArrayList<>();
-        for (Reminder reminder: repository.findAll()) {
+        for (Reminder reminder: repository.findByUserId(userId)) {
             ReminderDTO reminderDTO = Reminder.mapToDTO(reminder);
             reminderDTOList.add(reminderDTO);
         }

@@ -24,8 +24,7 @@ public class Emotion {
     @Column(columnDefinition = "TEXT")
     private String tags;
     private LocalDateTime creationDate = LocalDateTime.now();
-    @OneToMany(mappedBy = "emotion", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private String comment;
     @Enumerated(EnumType.STRING)
     private EMOTION_TYPE emotionType;
 
@@ -39,7 +38,7 @@ public class Emotion {
 
         dto.setText(dObject.getText());
         dto.setId(dObject.getId());
-        dto.setComments(dObject.getComments());
+        dto.setComment(dObject.getComment());
         dto.setOwnerId(dObject.getOwnerId());
         dto.setCreationDate(dObject.getCreationDate());
         dto.setEmotionType(dObject.getEmotionType());

@@ -16,6 +16,7 @@ public class ReminderDTO {
     private Long id;
     private String text;
     private LocalDateTime scheduledTime;
+    private Long userId;
     @JsonProperty(value = "isActivated")
     private boolean isActivated;
 
@@ -24,6 +25,7 @@ public class ReminderDTO {
 
         reminder.setId(reminderDTO.getId());
         reminder.setText(reminderDTO.getText());
+        reminder.setUserId(reminderDTO.getUserId());
         reminder.setScheduledTime(reminderDTO.getScheduledTime());
         reminder.setActivated(reminderDTO.isActivated());
 
