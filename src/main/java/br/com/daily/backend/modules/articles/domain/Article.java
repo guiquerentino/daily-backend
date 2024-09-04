@@ -33,7 +33,7 @@ public class Article {
         articleDTO.setTitle(article.getTitle());
         articleDTO.setMinutesToRead(article.getMinutesToRead());
         articleDTO.setText(article.getText());
-        articleDTO.setCategory(articleDTO.getCategory());
+        articleDTO.setCategory(article.getCategory());
         articleDTO.setAutor(article.getAutor());
         articleDTO.setCreationDate(article.getCreationDate());
 
