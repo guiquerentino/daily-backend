@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/goals")
@@ -28,6 +29,19 @@ public class GoalController {
         request.setCreationDate(LocalDateTime.now());
         repository.save(request);
         return new ResponseEntity<>(request, HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public Goal updateGoal(@RequestParam Long goalId){
+        Optional<Goal> goal = repository.findById(goalId);
+
+        if(goal.isPresent()){
+            goal.get().setDone(!goal.get().isDone());
+            return repository.save(goal.get());
+        }
+
+        return null;
+
     }
 
     @DeleteMapping

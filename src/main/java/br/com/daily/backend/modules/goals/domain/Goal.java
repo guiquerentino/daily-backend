@@ -22,5 +22,9 @@ public class Goal {
 
     private LocalDateTime creationDate = LocalDateTime.now();
 
+    private boolean isDone;
+
+    private boolean isAllDay;
+
     private LocalDateTime scheduledTime;
 }

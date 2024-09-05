@@ -17,6 +17,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/account")
+@CrossOrigin(value = "http://localhost:63579/#/auth/")
 public class AccountController {
 
     @Autowired
