@@ -1,13 +1,11 @@
 package br.com.daily.backend.modules.accounts.domain;
 
 import java.math.BigInteger;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 
 import br.com.daily.backend.modules.accounts.domain.dto.AccountDTO;
-import br.com.daily.backend.modules.accounts.domain.dto.OnboardingDTO;
-import br.com.daily.backend.modules.accounts.domain.enums.ACCOUNT_TYPE;
+import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
 import br.com.daily.backend.modules.accounts.domain.enums.MEDITATION_EXPERIENCE;
 import br.com.daily.backend.modules.accounts.domain.enums.TARGET;
@@ -22,7 +20,7 @@ public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private BigInteger id;
-    private ACCOUNT_TYPE accountType;
+    private ROLE accountType;
     @Column(unique = true, nullable = false, name = "email")
     private String email;
     private byte[] password;

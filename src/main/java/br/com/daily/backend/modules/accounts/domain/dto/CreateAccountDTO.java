@@ -1,6 +1,6 @@
 package br.com.daily.backend.modules.accounts.domain.dto;
 
-import br.com.daily.backend.modules.accounts.domain.enums.ACCOUNT_TYPE;
+import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import lombok.Data;
 
 @Data
@@ -8,6 +8,6 @@ public class CreateAccountDTO {
 
     private String email;
     private String password;
-    private ACCOUNT_TYPE accountType;
+    private ROLE accountType;
 
 }

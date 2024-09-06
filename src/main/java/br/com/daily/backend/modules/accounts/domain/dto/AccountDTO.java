@@ -1,7 +1,7 @@
 package br.com.daily.backend.modules.accounts.domain.dto;
 
 import br.com.daily.backend.modules.accounts.domain.Account;
-import br.com.daily.backend.modules.accounts.domain.enums.ACCOUNT_TYPE;
+import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
 import br.com.daily.backend.modules.accounts.domain.enums.MEDITATION_EXPERIENCE;
 import br.com.daily.backend.modules.accounts.domain.enums.TARGET;
@@ -14,7 +14,7 @@ import java.util.List;
 public class AccountDTO {
 
     private BigInteger id;
-    private ACCOUNT_TYPE accountType;
+    private ROLE accountType;
     private String email;
     private byte[] profilePhoto;
 
