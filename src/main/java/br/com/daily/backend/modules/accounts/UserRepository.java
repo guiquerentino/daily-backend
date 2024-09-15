@@ -1,6 +1,6 @@
 package br.com.daily.backend.modules.accounts;
 
-import br.com.daily.backend.modules.accounts.domain.Account;
+import br.com.daily.backend.modules.accounts.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,9 +10,9 @@ import java.math.BigInteger;
 import java.util.Optional;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, BigInteger> {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    @Query("SELECT a FROM Account a WHERE a.email = :email")
-    Optional<Account> findByEmail(@Param("email") String email);
+    @Query("SELECT a FROM User a WHERE a.email = :email")
+    Optional<User> findByEmail(@Param("email") String email);
 
 }

@@ -1,15 +1,16 @@
 package br.com.daily.backend.modules.accounts;
 
-import br.com.daily.backend.modules.accounts.domain.Account;
-import br.com.daily.backend.modules.accounts.domain.dto.*;
-import br.com.daily.backend.core.exceptions.LoginException;
-import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
-import br.com.daily.backend.modules.code.CodeService;
+import br.com.daily.backend.core.exceptions.GenericException;
+import br.com.daily.backend.modules.accounts.domain.Patient;
+import br.com.daily.backend.modules.accounts.domain.Psychologist;
+import br.com.daily.backend.modules.accounts.domain.User;
+import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
+import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
+import br.com.daily.backend.modules.accounts.domain.requests.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -17,117 +18,117 @@ import java.util.Optional;
 public class AccountService {
 
     @Autowired
-    private AccountRepository repository;
+    private UserRepository repository;
 
     @Autowired
     private AccountUtils utils;
 
     @Autowired
-    private CodeService codeService;
+    private PatientRepository patientRepository;
 
-    public AccountDTO createAccount(CreateAccountDTO account) {
+    public UserRecord createAccount(CreateAccountRequest request) {
 
-        Optional<Account> accountDB = repository.findByEmail(account.getEmail());
+        Optional<User> userDB = repository.findByEmail(request.email());
 
-        if (accountDB.isPresent()) {
-            throw new LoginException("ACCOUNT_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
+        if (userDB.isPresent()) {
+            throw new GenericException("ACCOUNT_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
         }
 
-        Account accountWithPasswordHashed = utils.hashPassword(account);
+        User accountWithPasswordHashed = utils.hashPassword(request);
 
         repository.save(accountWithPasswordHashed);
+        createPatientOrPsychologist(accountWithPasswordHashed);
 
-        return Account.mapToDTO(accountWithPasswordHashed);
+        return User.mapToRecord(accountWithPasswordHashed);
     }
 
-    public AccountDTO authorizeAccount(LoginDTO account) {
+    public UserRecord authorizeAccount(LoginRequest request) {
 
-        Optional<Account> accountDB = repository.findByEmail(account.getEmail());
+        Optional<User> userDB = repository.findByEmail(request.email());
 
-        if (accountDB.isEmpty()) {
-            throw new LoginException("EMAIL_NOT_FOUND", HttpStatus.NOT_FOUND);
+        if (userDB.isEmpty()) {
+            throw new GenericException("EMAIL_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
 
-        if (!accountDB.get().getAccountType().equals(account.getAccountType())) {
-            throw new LoginException("WRONG_APP", HttpStatus.CONFLICT);
+        byte[] password = utils.hashPasswordToAuthorize(request.password(), userDB.get().getPasswordSalt());
+
+        if (Arrays.equals(password, userDB.get().getPassword())) {
+            return User.mapToRecord(userDB.get());
         }
 
-        byte[] password = utils.hashPasswordToAuthorize(account.getPassword(), accountDB.get().getPasswordSalt());
-
-        if (Arrays.equals(password, accountDB.get().getPassword())) {
-            return Account.mapToDTO(accountDB.get());
-        }
-
-        throw new LoginException("WRONG_PASSWORD", HttpStatus.UNAUTHORIZED);
+        throw new GenericException("WRONG_PASSWORD", HttpStatus.UNAUTHORIZED);
     }
 
-    public void changePassword(ChangePasswordDTO request) {
-        Optional<Account> accountDB = repository.findByEmail(request.getEmail());
+    public void changePassword(ChangePasswordRequest request) {
+        Optional<User> userDB = repository.findByEmail(request.email());
 
-        if (accountDB.isPresent()) {
+        if (userDB.isPresent()) {
 
-            Account account = utils.hashPassword(request);
+            User user = utils.hashPassword(request);
 
-            accountDB.get().setPassword(account.getPassword());
-            accountDB.get().setPasswordSalt(account.getPasswordSalt());
+            userDB.get().setPassword(user.getPassword());
+            userDB.get().setPasswordSalt(user.getPasswordSalt());
 
-            repository.save(accountDB.get());
+            repository.save(userDB.get());
 
             return;
-        }
-        throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
-    }
-
-    public void changeAccountInfos(ChangeAccountDTO request) {
-        Optional<Account> account = repository.findById(request.getUserId());
-
-        if (account.isPresent()) {
-            account.get().setEmail(request.getEmail());
-
-            if(request.getGender() == 0){
-                account.get().setGender(GENDER.FEMALE);
-            }
-
-            if(request.getGender() == 1){
-                account.get().setGender(GENDER.MALE);
-            }
-
-            if(request.getGender() == 2){
-                account.get().setGender(GENDER.NONE);
-            }
-
-            account.get().setFullName(request.getFullName());
-
-            repository.save(account.get());
-
-            return;
-        }
-        throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
-    }
-
-    public AccountDTO doOnboarding(OnboardingDTO request) {
-        Optional<Account> account = repository.findById(request.getAccountId());
-
-        if (account.isPresent()) {
-
-            if (!account.get().isHasOnboarding()) {
-
-                account.get().setFullName(request.getFullName());
-                account.get().setGender(request.getGender());
-                account.get().setAge(request.getAge());
-                account.get().setTarget(request.getTarget());
-                account.get().setMeditationExperience(request.getMeditationExperience());
-                account.get().setCodeToConnect(codeService.generateAccountCode());
-                account.get().setHasOnboarding(true);
-
-                repository.save(account.get());
-
-                return Account.mapToDTO(account.get());
-            }
-
-            throw new LoginException("ONBOARDING_ALREADY_EXISTS", HttpStatus.BAD_REQUEST);
 
         }
-        throw new LoginException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
+        throw new GenericException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
     }
+
+    public void updateProfile(ChangeProfileRequest request, Long userId) {
+
+        Optional<User> user = repository.findById(userId);
+
+        if (user.isPresent()) {
+
+            User userDB = user.get();
+            userDB.setEmail(request.email());
+
+            if (request.role().equals(ROLE.PATIENT)) {
+
+                Patient patientDb = patientRepository.findByUserId(userId);
+                patientDb.setName(request.name());
+                patientDb.setGender(request.gender());
+                patientDb.setProfilePhoto(request.profilePhoto());
+
+                patientRepository.save(patientDb);
+            }
+            /*
+            TODO: PSYCHOLOGIST UPDATE
+             */
+        } else {
+            throw new GenericException("ACCOUNT_NOT_FOUND", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void createPatientOrPsychologist(User user) {
+
+        if (user.getRole().equals(ROLE.PATIENT)) {
+            Patient patient = new Patient();
+            patient.setUser(user);
+
+            patientRepository.save(patient);
+        }
+
+        /*
+        TODO: PSYCHOLOGIST LINE CREATE
+         */
+
+    }
+
+    public void finishPatientOnboarding(OnboardingRequest request, Long userId) {
+
+        Patient patient = patientRepository.findByUserId(userId);
+
+        patient.setAge(request.age());
+        patient.setGender(request.gender());
+        patient.setName(request.name());
+        patient.setTargets(request.targets());
+        patient.setMeditationExperience(request.meditationExperience());
+
+        patientRepository.save(patient);
+    }
+
 }

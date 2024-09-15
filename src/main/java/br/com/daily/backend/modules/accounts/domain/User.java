@@ -1,6 +1,6 @@
 package br.com.daily.backend.modules.accounts.domain;
 
-import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
+import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -29,14 +29,8 @@ public class User {
     @Column(name = "password_salt", nullable = false)
     private byte[] passwordSalt;
 
-    @Column(name = "name", length = 100)
-    private String name;
-
-    @Column(name = "gender", nullable = true)
-    private GENDER gender;
-
-    @Column(name = "profile_photo", nullable = true)
-    private byte[] profilePhoto;
+    @Column(name = "has_onboarding", nullable = false)
+    private boolean hasOnboarding;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt = LocalDateTime.now();
@@ -55,6 +49,17 @@ public class User {
     @PreUpdate
     private void preUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    public static UserRecord mapToRecord(User user) {
+        return new UserRecord(
+                user.getId(),
+                user.getRole(),
+                user.getEmail(),
+                user.isHasOnboarding(),
+                user.getPassword(),
+                user.getPasswordSalt()
+        );
     }
 
 }

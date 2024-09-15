@@ -1,6 +1,6 @@
 package br.com.daily.backend.modules.emotions;
 
-import br.com.daily.backend.core.exceptions.LoginException;
+import br.com.daily.backend.core.exceptions.GenericException;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
 import br.com.daily.backend.modules.emotions.domain.Tag;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
@@ -55,7 +55,7 @@ public class EmotionService {
         Optional<Emotion> emotion = repository.findById(request.getId());
 
         if (emotion.isEmpty()) {
-            throw new LoginException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
+            throw new GenericException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
 
         return Emotion.mapToDTO(repository.save(emotion.get()));
@@ -65,7 +65,7 @@ public class EmotionService {
         Optional<Emotion> emotion = repository.findById(id);
 
         if (emotion.isEmpty()) {
-            throw new LoginException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
+            throw new GenericException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
 
         repository.deleteById(id);

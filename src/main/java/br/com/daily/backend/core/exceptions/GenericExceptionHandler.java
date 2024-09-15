@@ -10,10 +10,10 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 @ControllerAdvice
-public class LoginExceptionHandler {
+public class GenericExceptionHandler {
 
-    @ExceptionHandler(LoginException.class)
-    public ResponseEntity<Object> handleLoginException(LoginException ex) {
+    @ExceptionHandler(GenericException.class)
+    public ResponseEntity<Object> handleLoginException(GenericException ex) {
         Map<String, Object> body = new LinkedHashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
