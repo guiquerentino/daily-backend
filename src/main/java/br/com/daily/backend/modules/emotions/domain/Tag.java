@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "TAGS_INFO")
+@Table(name = "tags")
 public class Tag {
 
     @Id

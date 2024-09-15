@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface ArticleRepository extends JpaRepository<Article,Long> {
 
-    public List<Article> findTop3ByOrderByCreationDateDesc();
+    public List<Article> findTop3ByOrderByCreatedAtDesc();
 
 }

@@ -19,8 +19,7 @@ public class ScoreboardService {
     public ScoreboardDTO returnUserScoreboard(Long id){
             ScoreboardDTO response = new ScoreboardDTO();
 
-        // Pega todos os registros de emoções
-        List<Emotion> emotions = repository.findByOwnerId(id);
+        List<Emotion> emotions = repository.findByUserId(id);
 
         for(Emotion emotion: emotions){
 

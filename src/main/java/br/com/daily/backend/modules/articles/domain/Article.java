@@ -1,42 +1,58 @@
 package br.com.daily.backend.modules.articles.domain;
 
-import br.com.daily.backend.modules.articles.domain.dto.ArticleDTO;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import br.com.daily.backend.modules.articles.domain.dto.ArticleRecord;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "ARTICLE_INFO")
+@Table(name = "articles")
 public class Article {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    @Column(name = "title", nullable = false, length = 50)
     private String title;
+
+    @Column(name = "text", nullable = false, length = 30000)
     private String text;
+
+    @Column(name = "autor", nullable = false, length = 70)
     private String autor;
+
+    @Column(name = "banner_url", nullable = false)
     private String bannerURL;
+
+    @Column(name = "minutes_to_read", nullable = false)
     private String minutesToRead;
+
+    @Column(name = "category", nullable = false)
     private String category;
-    private LocalDateTime creationDate = LocalDateTime.now();
 
-    public static ArticleDTO mapToDTO(Article article){
-        ArticleDTO articleDTO = new ArticleDTO();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-        articleDTO.setBannerURL(article.getBannerURL());
-        articleDTO.setTitle(article.getTitle());
-        articleDTO.setMinutesToRead(article.getMinutesToRead());
-        articleDTO.setText(article.getText());
-        articleDTO.setCategory(article.getCategory());
-        articleDTO.setAutor(article.getAutor());
-        articleDTO.setCreationDate(article.getCreationDate());
+    @Column(name = "updated_at", nullable = true, updatable = true)
+    private LocalDateTime updatedAt;
 
-        return articleDTO;
+    @Column(name = "deleted_at", nullable = true, updatable = true)
+    private LocalDateTime deletedAt;
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public static ArticleRecord mapToRecord(Article article) {
+        return new ArticleRecord(article.getId(),article.getTitle(), article.getText(), article.getAutor(), article.getBannerURL(), article.getMinutesToRead(), article.getCategory(), article.getCreatedAt());
     }
 }

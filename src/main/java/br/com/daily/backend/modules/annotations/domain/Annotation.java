@@ -1,6 +1,8 @@
 package br.com.daily.backend.modules.annotations.domain;
 
-import br.com.daily.backend.modules.annotations.domain.dto.AnnotationDTO;
+import br.com.daily.backend.modules.accounts.domain.User;
+import br.com.daily.backend.modules.annotations.AnnotationRepository;
+import br.com.daily.backend.modules.annotations.domain.dto.AnnotationRecord;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,23 +10,38 @@ import java.time.LocalDateTime;
 
 @Data
 @Entity
-@Table(name = "ANNOTATIONS_INFO")
+@Table(name = "annotations")
 public class Annotation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long authorId;
+
+    @Column(nullable = false, name = "user_id")
+    private Long userId;
+
+    @Column(nullable = false, name = "text")
     private String text;
-    private LocalDateTime creationDate = LocalDateTime.now();
 
-public static AnnotationDTO mapToDTO(Annotation annotation) {
-    AnnotationDTO annotationDTO = new AnnotationDTO();
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt = LocalDateTime.now();
 
-    annotationDTO.setId(annotation.getId());
-    annotationDTO.setAuthorId(annotationDTO.getAuthorId());
-    annotationDTO.setText(annotation.getText());
-    annotationDTO.setCreationDate(annotation.getCreationDate());
+    @Column(name = "updated_at", nullable = true, updatable = true)
+    private LocalDateTime updatedAt;
 
-    return annotationDTO;
-}
+    @Column(name = "deleted_at", nullable = true, updatable = true)
+    private LocalDateTime deletedAt;
+
+    @PrePersist
+    private void prePersist() {
+        createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    private void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
+
+    public static AnnotationRecord mapToRecord(Annotation annotation) {
+        return new AnnotationRecord(annotation.getId(), annotation.getUserId(), annotation.getText(), annotation.getCreatedAt());
+    }
 }

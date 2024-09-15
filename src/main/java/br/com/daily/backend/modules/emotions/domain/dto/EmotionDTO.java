@@ -1,6 +1,5 @@
 package br.com.daily.backend.modules.emotions.domain.dto;
 
-import br.com.daily.backend.modules.emotions.domain.Comment;
 import br.com.daily.backend.modules.emotions.domain.Tag;
 import br.com.daily.backend.modules.emotions.domain.enums.EMOTION_TYPE;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
@@ -14,10 +13,10 @@ import java.util.List;
 @Data
 public class EmotionDTO {
     private Long id;
-    private Long ownerId;
+    private Long userId;
     private String text;
     private List<Tag> tags;
-    private LocalDateTime creationDate;
+    private LocalDateTime createdAt;
     private String comment;
     private EMOTION_TYPE emotionType;
 
@@ -30,7 +29,7 @@ public class EmotionDTO {
         emotion.setText(dto.getText());
         emotion.setId(dto.getId());
         emotion.setComment(dto.getComment());
-        emotion.setOwnerId(dto.getOwnerId());
+        emotion.setUserId(dto.getUserId());
         emotion.setEmotionType(dto.getEmotionType());
 
         return emotion;

@@ -38,7 +38,7 @@ public class EmotionService {
 
         LocalDateTime nextDay = formattedDate.plusDays(1);
 
-        List<Emotion> fetchedDbEmotions = repository.findByOwnerIdAndCreationDateBetween(id, formattedDate, nextDay);
+        List<Emotion> fetchedDbEmotions = repository.findByUserIdAndCreatedAtBetween(id, formattedDate, nextDay);
 
         fetchedDbEmotions.forEach(emotion -> {
             try {

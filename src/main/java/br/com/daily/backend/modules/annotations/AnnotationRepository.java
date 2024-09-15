@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface AnnotationRepository extends JpaRepository<Annotation,Long> {
-    List<Annotation> findByAuthorId(Long authorId);
+    List<Annotation> findByUserId(Long userId);
 }

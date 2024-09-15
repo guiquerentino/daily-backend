@@ -6,13 +6,13 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "SCOREBOARD_INFO")
+@Table(name = "scoreboards")
 public class Scoreboard {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    private Long ownerId;
+    private Long userId;
     private int mentalHealth;
     private int focus;
     private int relationship;
