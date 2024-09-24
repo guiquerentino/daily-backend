@@ -2,10 +2,13 @@ package br.com.daily.backend.modules.emotions;
 
 import br.com.daily.backend.core.exceptions.GenericException;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
-import br.com.daily.backend.modules.emotions.domain.Tag;
+import br.com.daily.backend.modules.emotions.domain.dto.EmotionRecord;
+import br.com.daily.backend.modules.tags.domain.Tag;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
-import br.com.daily.backend.modules.emotions.domain.dto.TagDTO;
+import br.com.daily.backend.modules.tags.domain.dto.TagDTO;
+import br.com.daily.backend.modules.tags.TagRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,14 +28,22 @@ public class EmotionService {
     @Autowired
     TagRepository tagRepository;
 
-    public EmotionDTO saveEmotion(EmotionDTO request) throws JsonProcessingException {
+    public EmotionRecord saveEmotion(EmotionRecord request) throws JsonProcessingException {
+        Emotion emotion = new Emotion();
 
+        ObjectMapper mapper = new ObjectMapper();
 
-        return Emotion.mapToDTO(repository.save(EmotionDTO.mapToDO(request)));
+        emotion.setEmotionType(request.emotionType());
+        emotion.setText(request.text());
+        emotion.setTags(mapper.writeValueAsString(request.tags()));
+        emotion.setComment(request.comment());
+        emotion.setUserId(request.userId());
+
+        return Emotion.mapToRecord(repository.save(emotion));
     }
 
-    public List<EmotionDTO> fetchEmotionsByUser(Long id, String date) {
-        List<EmotionDTO> response = new ArrayList<>();
+    public List<EmotionRecord> fetchEmotionsByUser(Long id, String date) {
+        List<EmotionRecord> response = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime formattedDate = LocalDateTime.parse(date, formatter).toLocalDate().atStartOfDay();
 
@@ -42,7 +53,7 @@ public class EmotionService {
 
         fetchedDbEmotions.forEach(emotion -> {
             try {
-                response.add(Emotion.mapToDTO(emotion));
+                response.add(Emotion.mapToRecord(emotion));
             } catch (JsonProcessingException e) {
                 throw new RuntimeException(e);
             }
@@ -51,14 +62,23 @@ public class EmotionService {
         return response;
     }
 
-    public EmotionDTO updateEmotion(EmotionDTO request) throws JsonProcessingException {
-        Optional<Emotion> emotion = repository.findById(request.getId());
+    public EmotionRecord updateEmotion(EmotionRecord request) throws JsonProcessingException {
+        Optional<Emotion> emotionDB = repository.findById(request.id());
+        ObjectMapper mapper = new ObjectMapper();
 
-        if (emotion.isEmpty()) {
+        if (emotionDB.isEmpty()) {
             throw new GenericException("EMOTION_NOT_FOUND", HttpStatus.NOT_FOUND);
         }
 
-        return Emotion.mapToDTO(repository.save(emotion.get()));
+        Emotion emotion = emotionDB.get();
+
+        emotion.setEmotionType(request.emotionType());
+        emotion.setText(request.text());
+        emotion.setTags(mapper.writeValueAsString(request.tags()));
+        emotion.setComment(request.comment());
+        emotion.setUserId(request.userId());
+
+        return Emotion.mapToRecord(repository.save(emotion));
     }
 
     public void deleteEmotion(Long id) {
@@ -71,12 +91,5 @@ public class EmotionService {
         repository.deleteById(id);
     }
 
-    public List<TagDTO> returnAllTags() {
-
-        List<TagDTO> response = new ArrayList<>();
-        tagRepository.findAll().forEach(tag -> response.add(Tag.mapToDTO(tag)));
-
-        return response;
-    }
 
 }

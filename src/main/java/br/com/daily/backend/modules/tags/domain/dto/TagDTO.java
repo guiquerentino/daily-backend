@@ -1,6 +1,6 @@
-package br.com.daily.backend.modules.emotions.domain.dto;
+package br.com.daily.backend.modules.tags.domain.dto;
 
-import br.com.daily.backend.modules.emotions.domain.Tag;
+import br.com.daily.backend.modules.tags.domain.Tag;
 import lombok.Data;
 
 @Data

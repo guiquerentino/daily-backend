@@ -1,6 +1,6 @@
-package br.com.daily.backend.modules.emotions.domain;
+package br.com.daily.backend.modules.tags.domain;
 
-import br.com.daily.backend.modules.emotions.domain.dto.TagDTO;
+import br.com.daily.backend.modules.tags.domain.dto.TagDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 

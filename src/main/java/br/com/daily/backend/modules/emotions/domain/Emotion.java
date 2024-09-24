@@ -1,7 +1,9 @@
 package br.com.daily.backend.modules.emotions.domain;
 
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionDTO;
+import br.com.daily.backend.modules.emotions.domain.dto.EmotionRecord;
 import br.com.daily.backend.modules.emotions.domain.enums.EMOTION_TYPE;
+import br.com.daily.backend.modules.tags.domain.Tag;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,21 +56,13 @@ public class Emotion {
         updatedAt = LocalDateTime.now();
     }
 
-    public static EmotionDTO mapToDTO(Emotion dObject) throws JsonProcessingException {
-        EmotionDTO dto = new EmotionDTO();
-
+    public static EmotionRecord mapToRecord(Emotion emotion) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
 
-        dto.setTags(mapper.readValue(dObject.getTags(), new TypeReference<List<Tag>>() {
-        }));
+        List<Tag> tags = mapper.readValue(emotion.getTags(), new TypeReference<List<Tag>>() {
+        });
 
-        dto.setText(dObject.getText());
-        dto.setId(dObject.getId());
-        dto.setComment(dObject.getComment());
-        dto.setUserId(dObject.getUserId());
-        dto.setCreatedAt(dObject.getCreatedAt());
-        dto.setEmotionType(dObject.getEmotionType());
-        return dto;
+        return new EmotionRecord(emotion.getId(), emotion.getUserId(), emotion.getText(), tags, emotion.getCreatedAt(), emotion.getComment(), emotion.getEmotionType());
     }
 
 

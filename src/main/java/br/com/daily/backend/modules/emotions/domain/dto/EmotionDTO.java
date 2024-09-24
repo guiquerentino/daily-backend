@@ -1,6 +1,6 @@
 package br.com.daily.backend.modules.emotions.domain.dto;
 
-import br.com.daily.backend.modules.emotions.domain.Tag;
+import br.com.daily.backend.modules.tags.domain.Tag;
 import br.com.daily.backend.modules.emotions.domain.enums.EMOTION_TYPE;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
 import com.fasterxml.jackson.core.JsonProcessingException;
