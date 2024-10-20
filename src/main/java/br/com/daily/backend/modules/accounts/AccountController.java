@@ -1,5 +1,6 @@
 package br.com.daily.backend.modules.accounts;
 
+import br.com.daily.backend.modules.accounts.domain.dto.LoginResponse;
 import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
 import br.com.daily.backend.modules.accounts.domain.requests.*;
 import jakarta.transaction.Transactional;
@@ -10,9 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.math.BigInteger;
-import java.util.*;
 
 @RestController
 @RequestMapping(value = "/api/v1/user")
@@ -30,7 +28,7 @@ public class AccountController {
 
     @PostMapping(value = "/authorize")
     @Transactional
-    public ResponseEntity<UserRecord> authorizeAccount(@RequestBody @NotNull LoginRequest request) {
+    public ResponseEntity<LoginResponse> authorizeAccount(@RequestBody @NotNull LoginRequest request) {
         return new ResponseEntity<>(service.authorizeAccount(request), HttpStatus.ACCEPTED);
     }
 

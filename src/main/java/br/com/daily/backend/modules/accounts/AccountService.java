@@ -4,6 +4,7 @@ import br.com.daily.backend.core.exceptions.GenericException;
 import br.com.daily.backend.modules.accounts.domain.Patient;
 import br.com.daily.backend.modules.accounts.domain.Psychologist;
 import br.com.daily.backend.modules.accounts.domain.User;
+import br.com.daily.backend.modules.accounts.domain.dto.LoginResponse;
 import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.requests.*;
@@ -42,7 +43,7 @@ public class AccountService {
         return User.mapToRecord(accountWithPasswordHashed);
     }
 
-    public UserRecord authorizeAccount(LoginRequest request) {
+    public LoginResponse authorizeAccount(LoginRequest request) {
 
         Optional<User> userDB = repository.findByEmail(request.email());
 
@@ -53,7 +54,24 @@ public class AccountService {
         byte[] password = utils.hashPasswordToAuthorize(request.password(), userDB.get().getPasswordSalt());
 
         if (Arrays.equals(password, userDB.get().getPassword())) {
-            return User.mapToRecord(userDB.get());
+            UserRecord response = User.mapToRecord(userDB.get());
+
+            Patient patient = patientRepository.findByUserId(response.id());
+
+            LoginResponse loginResponse = new LoginResponse();
+
+            loginResponse.setId(response.id());
+            loginResponse.setRole(response.role());
+            loginResponse.setHasOnboarding(response.hasOnboarding());
+            loginResponse.setEmail(response.email());
+            loginResponse.setName(patient.getName());
+            loginResponse.setConnectionCode(patient.getConnectionCode());
+            loginResponse.setTargetList(patient.getTargets());
+            loginResponse.setProfilePhoto(patient.getProfilePhoto());
+            loginResponse.setMeditationExperience(patient.getMeditationExperience());
+            loginResponse.setGender(patient.getGender());
+
+            return loginResponse;
         }
 
         throw new GenericException("WRONG_PASSWORD", HttpStatus.UNAUTHORIZED);
@@ -119,6 +137,13 @@ public class AccountService {
     }
 
     public void finishPatientOnboarding(OnboardingRequest request, Long userId) {
+
+        Optional<User> user = repository.findById(userId);
+
+        if(user.isPresent()){
+            user.get().setHasOnboarding(true);
+            repository.save(user.get());
+        }
 
         Patient patient = patientRepository.findByUserId(userId);
 

@@ -56,9 +56,7 @@ public class User {
                 user.getId(),
                 user.getRole(),
                 user.getEmail(),
-                user.isHasOnboarding(),
-                user.getPassword(),
-                user.getPasswordSalt()
+                user.isHasOnboarding()
         );
     }
 
