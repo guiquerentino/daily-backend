@@ -12,6 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigInteger;
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = "/api/v1/user")
 public class AccountController {
@@ -39,15 +42,23 @@ public class AccountController {
     }
 
     @PutMapping(value = "/update-profile")
-    public ResponseEntity<Object> updateProfileAccount(@RequestBody @NotNull ChangeProfileRequest request, @RequestParam Long userId){
+    public ResponseEntity<Object> updateProfileAccount(@RequestBody @NotNull ChangeProfileRequest request, @RequestParam Long userId) {
         service.updateProfile(request, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping(value = "/onboarding/patient")
-    public ResponseEntity<Object> doAccountOnboarding(@RequestBody @NotNull OnboardingRequest request, @RequestParam Long userId){
+    public ResponseEntity<Object> doAccountOnboarding(@RequestBody @NotNull OnboardingRequest request, @RequestParam Long userId) {
         service.finishPatientOnboarding(request, userId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+
+    @PutMapping(value = "/profile-photo")
+    public ResponseEntity<Object> updateProfilePhoto(@RequestParam Long userId, @RequestBody Map<String, String> requestBody) {
+        service.updateProfilePhoto(userId, requestBody.get("image"));
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }
 

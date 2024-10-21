@@ -18,14 +18,12 @@ public class AnnotationService {
     AnnotationRepository repository;
 
     public AnnotationRecord createAnnotation(AnnotationRecord annotation) {
+        Annotation dbAnnotation = new Annotation();
 
-        Optional<Annotation> annotationDB = repository.findById(annotation.id());
+        dbAnnotation.setText(annotation.text());
+        dbAnnotation.setUserId(annotation.userId());
 
-        if (annotationDB.isPresent()) {
-            return Annotation.mapToRecord(repository.save(annotationDB.get()));
-        }
-
-        throw new GenericException("ANNOTATION_NOT_FOUND", HttpStatus.NOT_FOUND);
+        return Annotation.mapToRecord(repository.save(dbAnnotation));
     }
 
     public List<AnnotationRecord> listAllByAuthorId(Long userId) {

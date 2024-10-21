@@ -53,7 +53,7 @@ public class Meditation {
     }
 
     public static MeditationRecord mapToRecord(Meditation meditation) {
-        return new MeditationRecord(meditation.getId(), meditation.getName(), meditation.getPhotoUrl(), meditation.getType(), meditation.getType(), meditation.getAudioFile(), meditation.getDuration());
+        return new MeditationRecord(meditation.getId(), meditation.getName(), meditation.getPhotoUrl(), meditation.getType(), meditation.getText(), meditation.getAudioFile(), meditation.getDuration());
     }
 
 

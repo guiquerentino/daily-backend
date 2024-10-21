@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 
 @Service
@@ -154,6 +156,21 @@ public class AccountService {
         patient.setMeditationExperience(request.meditationExperience());
 
         patientRepository.save(patient);
+    }
+
+    public void updateProfilePhoto(Long userId, String base64){
+        Patient patient = patientRepository.findByUserId(userId);
+
+        if (base64 != null && !base64.isEmpty()) {
+            try {
+                byte[] photoBytes = Base64.getDecoder().decode(base64);
+                patient.setProfilePhoto(photoBytes);
+                patientRepository.save(patient);
+            } catch (IllegalArgumentException e) {
+                throw new GenericException("BASE_64_ERROR", HttpStatus.BAD_REQUEST);
+            }
+        }
+
     }
 
 }
