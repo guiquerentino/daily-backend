@@ -23,13 +23,13 @@ public class Psychologist {
     @Column(name = "name", length = 100)
     private String name;
 
-    @Column(name = "gender", nullable = false)
+    @Column(name = "gender", nullable = true)
     private GENDER gender;
 
-    @Column(name = "age", nullable = false)
+    @Column(name = "age", nullable = true)
     private int age;
 
-    @Column(name = "profile_photo", nullable = false)
+    @Column(name = "profile_photo", nullable = true)
     private byte[] profilePhoto;
 
     @OneToMany(mappedBy = "psychologist", cascade = CascadeType.ALL, orphanRemoval = true)

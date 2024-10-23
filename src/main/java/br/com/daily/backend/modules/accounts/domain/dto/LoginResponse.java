@@ -1,5 +1,6 @@
 package br.com.daily.backend.modules.accounts.domain.dto;
 
+import br.com.daily.backend.modules.accounts.domain.Patient;
 import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
 import br.com.daily.backend.modules.accounts.domain.enums.MEDITATION_EXPERIENCE;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
@@ -31,6 +32,10 @@ public class LoginResponse {
 
     String connectionCode;
 
+    List<PatientDTO> patients;
+
     GENDER gender;
+
+    int age;
 
 }

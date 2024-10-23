@@ -47,7 +47,7 @@ public class AccountController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping(value = "/onboarding/patient")
+    @PutMapping(value = "/onboarding")
     public ResponseEntity<Object> doAccountOnboarding(@RequestBody @NotNull OnboardingRequest request, @RequestParam Long userId) {
         service.finishPatientOnboarding(request, userId);
         return new ResponseEntity<>(HttpStatus.OK);

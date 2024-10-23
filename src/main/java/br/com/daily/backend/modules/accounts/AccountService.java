@@ -5,6 +5,7 @@ import br.com.daily.backend.modules.accounts.domain.Patient;
 import br.com.daily.backend.modules.accounts.domain.Psychologist;
 import br.com.daily.backend.modules.accounts.domain.User;
 import br.com.daily.backend.modules.accounts.domain.dto.LoginResponse;
+import br.com.daily.backend.modules.accounts.domain.dto.PatientDTO;
 import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.requests.*;
@@ -16,6 +17,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class AccountService {
@@ -28,6 +30,9 @@ public class AccountService {
 
     @Autowired
     private PatientRepository patientRepository;
+
+    @Autowired
+    private PsychologistRepository psychologistRepository;
 
     public UserRecord createAccount(CreateAccountRequest request) {
 
@@ -50,7 +55,7 @@ public class AccountService {
         Optional<User> userDB = repository.findByEmail(request.email());
 
         if (userDB.isEmpty()) {
-            throw new GenericException("EMAIL_NOT_FOUND", HttpStatus.NOT_FOUND);
+            throw new GenericException("EMAIL_NOT_FOUND", HttpStatus.NO_CONTENT);
         }
 
         byte[] password = utils.hashPasswordToAuthorize(request.password(), userDB.get().getPasswordSalt());
@@ -58,20 +63,32 @@ public class AccountService {
         if (Arrays.equals(password, userDB.get().getPassword())) {
             UserRecord response = User.mapToRecord(userDB.get());
 
-            Patient patient = patientRepository.findByUserId(response.id());
-
             LoginResponse loginResponse = new LoginResponse();
-
             loginResponse.setId(response.id());
             loginResponse.setRole(response.role());
             loginResponse.setHasOnboarding(response.hasOnboarding());
             loginResponse.setEmail(response.email());
-            loginResponse.setName(patient.getName());
-            loginResponse.setConnectionCode(patient.getConnectionCode());
-            loginResponse.setTargetList(patient.getTargets());
-            loginResponse.setProfilePhoto(patient.getProfilePhoto());
-            loginResponse.setMeditationExperience(patient.getMeditationExperience());
-            loginResponse.setGender(patient.getGender());
+
+            if (response.role().equals(ROLE.PATIENT)) {
+                Patient dbComplement = patientRepository.findByUserId(response.id());
+
+                loginResponse.setName(dbComplement.getName());
+                loginResponse.setConnectionCode(dbComplement.getConnectionCode());
+                loginResponse.setTargetList(dbComplement.getTargets());
+                loginResponse.setProfilePhoto(dbComplement.getProfilePhoto());
+                loginResponse.setMeditationExperience(dbComplement.getMeditationExperience());
+                loginResponse.setGender(dbComplement.getGender());
+                loginResponse.setAge(dbComplement.getAge());
+            } else {
+                Psychologist dbComplement = psychologistRepository.findByUserId(response.id());
+
+                loginResponse.setName(dbComplement.getName());
+                loginResponse.setProfilePhoto(dbComplement.getProfilePhoto());
+                loginResponse.setGender(dbComplement.getGender());
+                loginResponse.setAge(dbComplement.getAge());
+                loginResponse.setPatients(dbComplement.getPatients().stream()
+                        .map(PatientDTO::from)
+                        .collect(Collectors.toList()));            }
 
             return loginResponse;
         }
@@ -130,35 +147,50 @@ public class AccountService {
             patient.setUser(user);
 
             patientRepository.save(patient);
+
+        } else {
+            Psychologist psychologist = new Psychologist();
+            psychologist.setUser(user);
+
+            psychologistRepository.save(psychologist);
+
         }
-
-        /*
-        TODO: PSYCHOLOGIST LINE CREATE
-         */
-
     }
 
     public void finishPatientOnboarding(OnboardingRequest request, Long userId) {
 
         Optional<User> user = repository.findById(userId);
 
-        if(user.isPresent()){
+        if (user.isPresent()) {
             user.get().setHasOnboarding(true);
             repository.save(user.get());
+
+            if (user.get().getRole().equals(ROLE.PATIENT)) {
+                Patient patient = patientRepository.findByUserId(userId);
+
+                patient.setAge(request.age());
+                patient.setGender(request.gender());
+                patient.setName(request.name());
+                patient.setTargets(request.targets());
+                patient.setMeditationExperience(request.meditationExperience());
+
+                patientRepository.save(patient);
+            } else {
+                Psychologist psychologist = psychologistRepository.findByUserId(userId);
+
+                psychologist.setAge(request.age());
+                psychologist.setGender(request.gender());
+                psychologist.setName(request.name());
+
+                psychologistRepository.save(psychologist);
+            }
+
         }
 
-        Patient patient = patientRepository.findByUserId(userId);
 
-        patient.setAge(request.age());
-        patient.setGender(request.gender());
-        patient.setName(request.name());
-        patient.setTargets(request.targets());
-        patient.setMeditationExperience(request.meditationExperience());
-
-        patientRepository.save(patient);
     }
 
-    public void updateProfilePhoto(Long userId, String base64){
+    public void updateProfilePhoto(Long userId, String base64) {
         Patient patient = patientRepository.findByUserId(userId);
 
         if (base64 != null && !base64.isEmpty()) {

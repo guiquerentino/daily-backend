@@ -25,6 +25,7 @@ public class Patient {
     private User user;
 
     @ManyToOne
+    @JoinColumn(name = "psychologist_id", nullable = true)
     private Psychologist psychologist;
 
     @Column(name = "name", length = 100)
