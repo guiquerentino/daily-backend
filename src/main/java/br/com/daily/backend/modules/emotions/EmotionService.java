@@ -1,6 +1,8 @@
 package br.com.daily.backend.modules.emotions;
 
 import br.com.daily.backend.core.exceptions.GenericException;
+import br.com.daily.backend.modules.accounts.PatientRepository;
+import br.com.daily.backend.modules.accounts.domain.Patient;
 import br.com.daily.backend.modules.emotions.domain.Emotion;
 import br.com.daily.backend.modules.emotions.domain.dto.EmotionRecord;
 import br.com.daily.backend.modules.tags.domain.Tag;
@@ -28,6 +30,9 @@ public class EmotionService {
     @Autowired
     TagRepository tagRepository;
 
+    @Autowired
+    PatientRepository patientRepository;
+
     public EmotionRecord saveEmotion(EmotionRecord request) throws JsonProcessingException {
         Emotion emotion = new Emotion();
 
@@ -42,14 +47,26 @@ public class EmotionService {
         return Emotion.mapToRecord(repository.save(emotion));
     }
 
-    public List<EmotionRecord> fetchEmotionsByUser(Long id, String date) {
+    public List<EmotionRecord> fetchEmotionsByUser(Long id, String date, boolean isPatient) {
         List<EmotionRecord> response = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime formattedDate = LocalDateTime.parse(date, formatter).toLocalDate().atStartOfDay();
 
         LocalDateTime nextDay = formattedDate.plusDays(1);
 
-        List<Emotion> fetchedDbEmotions = repository.findByUserIdAndCreatedAtBetween(id, formattedDate, nextDay);
+        Long idUsuario = 0L;
+
+        if(isPatient){
+            Optional<Patient> patient = patientRepository.findById(id);
+
+            if(patient.isPresent()){
+                idUsuario = patient.get().getUser().getId();
+            }
+        } else {
+            idUsuario = id;
+        }
+
+        List<Emotion> fetchedDbEmotions = repository.findByUserIdAndCreatedAtBetween(idUsuario, formattedDate, nextDay);
 
         fetchedDbEmotions.forEach(emotion -> {
             try {
@@ -76,7 +93,6 @@ public class EmotionService {
         emotion.setText(request.text());
         emotion.setTags(mapper.writeValueAsString(request.tags()));
         emotion.setComment(request.comment());
-        emotion.setUserId(request.userId());
 
         return Emotion.mapToRecord(repository.save(emotion));
     }

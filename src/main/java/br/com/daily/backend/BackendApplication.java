@@ -2,8 +2,10 @@ package br.com.daily.backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan(basePackages = "br.com.daily.backend.core.config")
 public class BackendApplication {
 
     public static void main(String[] args) {

@@ -5,6 +5,7 @@ import br.com.daily.backend.modules.accounts.domain.enums.GENDER;
 import br.com.daily.backend.modules.accounts.domain.enums.MEDITATION_EXPERIENCE;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.enums.TARGET;
+import br.com.daily.backend.modules.emotions.domain.Emotion;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 

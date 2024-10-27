@@ -9,6 +9,8 @@ import br.com.daily.backend.modules.accounts.domain.dto.PatientDTO;
 import br.com.daily.backend.modules.accounts.domain.dto.UserRecord;
 import br.com.daily.backend.modules.accounts.domain.enums.ROLE;
 import br.com.daily.backend.modules.accounts.domain.requests.*;
+import br.com.daily.backend.modules.emotions.EmotionRepository;
+import br.com.daily.backend.modules.emotions.domain.Emotion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,9 @@ public class AccountService {
 
     @Autowired
     private PsychologistRepository psychologistRepository;
+
+    @Autowired
+    private EmotionRepository emotionRepository;
 
     public UserRecord createAccount(CreateAccountRequest request) {
 
@@ -79,16 +84,21 @@ public class AccountService {
                 loginResponse.setMeditationExperience(dbComplement.getMeditationExperience());
                 loginResponse.setGender(dbComplement.getGender());
                 loginResponse.setAge(dbComplement.getAge());
-            } else {
-                Psychologist dbComplement = psychologistRepository.findByUserId(response.id());
 
+            } else {
+
+                Psychologist dbComplement = psychologistRepository.findByUserId(response.id());
                 loginResponse.setName(dbComplement.getName());
                 loginResponse.setProfilePhoto(dbComplement.getProfilePhoto());
                 loginResponse.setGender(dbComplement.getGender());
                 loginResponse.setAge(dbComplement.getAge());
                 loginResponse.setPatients(dbComplement.getPatients().stream()
-                        .map(PatientDTO::from)
-                        .collect(Collectors.toList()));            }
+                        .map(patient -> {
+                            Optional<Emotion> lastEmotion = emotionRepository.findFirstByUserIdOrderByCreatedAtDesc(patient.getUser().getId());
+                            return PatientDTO.from(patient, lastEmotion.orElse(null));
+                        })
+                        .collect(Collectors.toList()));
+            }
 
             return loginResponse;
         }
