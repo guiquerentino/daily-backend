@@ -1,23 +1,102 @@
 package br.com.daily.backend.modules.chat;
 
+import br.com.daily.backend.modules.accounts.PatientRepository;
+import br.com.daily.backend.modules.accounts.PsychologistRepository;
+import br.com.daily.backend.modules.accounts.domain.Psychologist;
+import br.com.daily.backend.modules.chat.models.Chat;
+import br.com.daily.backend.modules.chat.models.ChatDTO;
 import br.com.daily.backend.modules.chat.models.ChatMessage;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Controller;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping(value = "/api/v1/chat")
 public class ChatController {
 
-    private final SimpMessagingTemplate messagingTemplate;
+    @Autowired
+    ChatMessageRepository repository;
 
-    public ChatController(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    @Autowired
+    ChatRepository chatRepository;
+
+    @Autowired
+    PatientRepository patientRepository;
+
+    @Autowired
+    PsychologistRepository psychologistRepository;
+
+    @PostMapping
+    public ChatMessage postMessage(@RequestBody ChatMessage message) {
+        Optional<Chat> chat = chatRepository.findById(message.getChatId());
+
+        if (chat.isPresent()) {
+            chat.get().setLastMessage(message.getContent());
+
+            LocalDateTime messageDateTime = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
+
+            long daysDiff = ChronoUnit.DAYS.between(messageDateTime, now);
+            long weeksDiff = daysDiff / 7;
+            long monthsDiff = ChronoUnit.MONTHS.between(messageDateTime, now);
+
+            String lastMessageTime;
+            if (daysDiff == 0) {
+                lastMessageTime = messageDateTime.toLocalTime().toString().substring(0, 5);
+            } else if (daysDiff < 7) {
+                lastMessageTime = "Há " + daysDiff + " dia" + (daysDiff > 1 ? "s" : "");
+            } else if (weeksDiff < 4) {
+                lastMessageTime = "Há " + weeksDiff + " semana" + (weeksDiff > 1 ? "s" : "");
+            } else {
+                lastMessageTime = "Há " + monthsDiff + " mês" + (monthsDiff > 1 ? "es" : "");
+            }
+
+            chat.get().setLastMessageTime(lastMessageTime);
+            chatRepository.save(chat.get());
+        }
+
+        return repository.save(message);
     }
 
-    @MessageMapping("/sendMessage")
-    public void sendMessage(ChatMessage message) {
-        String destination = "/topic/chat/" + message.getPatientId() + "-" + message.getPsychologistId();
-        messagingTemplate.convertAndSend(destination, message);
+    @GetMapping(value = "/psychologist")
+    public List<ChatDTO> getAllPsycholigstChats(@RequestParam String psychologistId) {
+        Psychologist psychologist = psychologistRepository.findByUserId(Long.parseLong(psychologistId));
+
+        List<Chat> chats = chatRepository.findByPsychologistId(psychologist.getId().toString());
+
+        List<ChatDTO> response = new ArrayList<>();
+        for (Chat chat : chats) {
+            ChatDTO chatDTO = new ChatDTO();
+            chatDTO.setId(chat.getId());
+            chatDTO.setLastMessage(chat.getLastMessage());
+            chatDTO.setPatient(patientRepository.findById(Long.parseLong(chat.getPatientId())).orElse(null));
+            chatDTO.setLastMessageTime(chat.getLastMessageTime());
+            response.add(chatDTO);
+        }
+
+        response.sort((chat1, chat2) -> {
+            if (chat1.getLastMessage() == null && chat2.getLastMessage() != null) {
+                return 1;
+            } else if (chat1.getLastMessage() != null && chat2.getLastMessage() == null) {
+                return -1;
+            } else if (chat1.getLastMessage() == null && chat2.getLastMessage() == null) {
+                return 0;
+            }
+            return chat2.getLastMessageTime().compareTo(chat1.getLastMessageTime());
+        });
+
+        return response;
+    }
+
+    @GetMapping
+    public List<ChatMessage> getAllMessagesById(@RequestParam Long chatId){
+        return repository.findByChatId(chatId);
     }
 
 }

@@ -12,7 +12,7 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
 
     Patient findByUserId(Long userId);
     Optional<Patient> findByConnectionCode(String connectionCode);
-    List<Patient> findByPsychologistId(Long psychologistId);
+    List<Patient> findByPsychologist(Long psychologistId);
 
 
 }

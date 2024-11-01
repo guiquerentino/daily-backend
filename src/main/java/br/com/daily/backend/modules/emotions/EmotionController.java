@@ -62,7 +62,7 @@ public class EmotionController {
     @GetMapping()
     private ResponseEntity<List<EmotionCountDTO>> returnEmotionCountPerPsychologist(@RequestParam Long psychologistId) {
         Psychologist psychologist = psychologistRepository.findByUserId(psychologistId);
-        List<Patient> patients = patientRepository.findByPsychologistId(psychologist.getId());
+        List<Patient> patients = patientRepository.findByPsychologist(psychologist.getId());
 
         Map<String, EmotionCountDTO> emotionCounts = new HashMap<>();
 

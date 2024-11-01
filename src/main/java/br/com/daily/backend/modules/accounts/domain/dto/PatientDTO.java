@@ -21,7 +21,7 @@ public class PatientDTO {
     private Emotion lastEmotion;
 
     public static PatientDTO from(Patient patient, Emotion lastEmotion) {
-        PatientDTO dto = new PatientDTO();
+            PatientDTO dto = new PatientDTO();
         dto.setId(patient.getId());
         dto.setName(patient.getName());
         dto.setAge(patient.getAge());

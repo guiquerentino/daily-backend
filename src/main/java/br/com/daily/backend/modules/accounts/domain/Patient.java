@@ -24,9 +24,7 @@ public class Patient {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "psychologist_id", nullable = true)
-    private Psychologist psychologist;
+    private Long psychologist;
 
     @Column(name = "name", length = 100)
     private String name;
