@@ -2,10 +2,12 @@ package br.com.daily.backend.modules.chat;
 
 import br.com.daily.backend.modules.accounts.PatientRepository;
 import br.com.daily.backend.modules.accounts.PsychologistRepository;
+import br.com.daily.backend.modules.accounts.domain.Patient;
 import br.com.daily.backend.modules.accounts.domain.Psychologist;
 import br.com.daily.backend.modules.chat.models.Chat;
 import br.com.daily.backend.modules.chat.models.ChatDTO;
 import br.com.daily.backend.modules.chat.models.ChatMessage;
+import br.com.daily.backend.modules.chat.models.ChatPatientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -63,6 +65,24 @@ public class ChatController {
 
         return repository.save(message);
     }
+
+    @GetMapping(value = "/patient")
+    public ChatPatientDTO getAllPatientChats(@RequestParam String patientId){
+        Patient patient = patientRepository.findByUserId(Long.parseLong(patientId));
+
+        Chat chat = chatRepository.findByPatientId(patient.getId().toString());
+
+        ChatPatientDTO response = new ChatPatientDTO();
+
+        response.setId(chat.getId());
+        response.setPsychologist(psychologistRepository.findById(Long.parseLong(chat.getPsychologistId())).orElse(null));
+        response.setLastMessage(chat.getLastMessage());
+        response.setLastMessageTime(chat.getLastMessageTime());
+
+
+        return response;
+    }
+
 
     @GetMapping(value = "/psychologist")
     public List<ChatDTO> getAllPsycholigstChats(@RequestParam String psychologistId) {
