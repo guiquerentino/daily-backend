@@ -19,6 +19,7 @@ public class PatientDTO {
     private byte[] profilePhoto;
     private MEDITATION_EXPERIENCE meditationExperience;
     private Emotion lastEmotion;
+    private Long userId;
 
     public static PatientDTO from(Patient patient, Emotion lastEmotion) {
             PatientDTO dto = new PatientDTO();
@@ -27,6 +28,7 @@ public class PatientDTO {
         dto.setAge(patient.getAge());
         dto.setGender(patient.getGender());
         dto.setTargets(patient.getTargets());
+        dto.setUserId(patient.getUser().getId());
         dto.setProfilePhoto(patient.getProfilePhoto());
         dto.setMeditationExperience(patient.getMeditationExperience());
         dto.setLastEmotion(lastEmotion);

@@ -141,6 +141,14 @@ public class AccountService {
                 patientDb.setProfilePhoto(request.profilePhoto());
 
                 patientRepository.save(patientDb);
+            } else {
+
+                Psychologist psychologistDb = psychologistRepository.findByUserId(userId);
+                psychologistDb.setName(request.name());
+                psychologistDb.setGender(request.gender());
+                psychologistDb.setProfilePhoto(request.profilePhoto());
+
+                psychologistRepository.save(psychologistDb);
             }
             /*
             TODO: PSYCHOLOGIST UPDATE
@@ -203,16 +211,30 @@ public class AccountService {
     public void updateProfilePhoto(Long userId, String base64) {
         Patient patient = patientRepository.findByUserId(userId);
 
-        if (base64 != null && !base64.isEmpty()) {
-            try {
-                byte[] photoBytes = Base64.getDecoder().decode(base64);
-                patient.setProfilePhoto(photoBytes);
-                patientRepository.save(patient);
-            } catch (IllegalArgumentException e) {
-                throw new GenericException("BASE_64_ERROR", HttpStatus.BAD_REQUEST);
+        if(patient != null) {
+            if (base64 != null && !base64.isEmpty()) {
+                try {
+                    byte[] photoBytes = Base64.getDecoder().decode(base64);
+                    patient.setProfilePhoto(photoBytes);
+                    patientRepository.save(patient);
+                } catch (IllegalArgumentException e) {
+                    throw new GenericException("BASE_64_ERROR", HttpStatus.BAD_REQUEST);
+                }
             }
-        }
+        } else {
+            Psychologist psychologist = psychologistRepository.findByUserId(userId);
 
+            if (base64 != null && !base64.isEmpty()) {
+                try {
+                    byte[] photoBytes = Base64.getDecoder().decode(base64);
+                    psychologist.setProfilePhoto(photoBytes);
+                    psychologistRepository.save(psychologist);
+                } catch (IllegalArgumentException e) {
+                    throw new GenericException("BASE_64_ERROR", HttpStatus.BAD_REQUEST);
+                }
+            }
+
+        }
     }
 
 }

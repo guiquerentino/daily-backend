@@ -26,8 +26,9 @@ public class GoalService {
         goalDB.setUserId(goal.userId());
         goalDB.setTitle(goal.title());
         goalDB.setAllDay(goal.isAllDay());
+        Goal goal1 = repository.save(goalDB);
 
-        return Goal.mapToRecord(repository.save(goalDB));
+        return Goal.mapToRecord(goal1);
     }
 
     public List<GoalRecord> getAllGoalsByUser(Long userId) {
